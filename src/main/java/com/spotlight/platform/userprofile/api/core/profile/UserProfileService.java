@@ -12,18 +12,20 @@ import com.spotlight.platform.userprofile.api.model.profile.primitives.UserProfi
 import javax.inject.Inject;
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 public class UserProfileService {
     private final UserProfileDao userProfileDao;
+    private final ProfileCommandProcessor commandProcessor;
+
+
 
     @Inject
-    ProfileCommandProcessor commandProcessor;
-
-    @Inject
-    public UserProfileService(UserProfileDao userProfileDao) {
+    public UserProfileService(UserProfileDao userProfileDao,ProfileCommandProcessor commandProcessor) {
         this.userProfileDao = userProfileDao;
+        this.commandProcessor = commandProcessor;
     }
 
     public UserProfile get(UserId userId) {
@@ -31,10 +33,21 @@ public class UserProfileService {
     }
 
     public UserProfile processCommand(UserProfileCommand command) {
-        var user = userProfileDao.get(command.userId());
-        if(user.isEmpty())  user = Optional.of(new UserProfile(command.userId(), Instant.now(),new HashMap<>()));
-        commandProcessor.processCommand(user.get(),command);
-        userProfileDao.put(user.get());
-        return user.get();
+        var user = userProfileDao.get(command.userId()).orElse(new UserProfile(command.userId(), Instant.now(),new HashMap<>()));
+        commandProcessor.processCommand(user,command);
+        userProfileDao.put(user);
+        return user;
+    }
+
+    public UserProfile processCommands(List<UserProfileCommand> commands) {
+        if(commands.isEmpty()) return null;
+        var userId = commands.get(0).userId();
+        var user = userProfileDao.get(userId).orElse(new UserProfile(userId, Instant.now(),new HashMap<>()));
+        for (var command:commands) {
+            commandProcessor.processCommand(user,command);
+            userProfileDao.put(user);
+        }
+
+        return user;
     }
 }

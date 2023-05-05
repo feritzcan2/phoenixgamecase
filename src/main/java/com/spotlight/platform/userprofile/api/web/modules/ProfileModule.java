@@ -18,7 +18,6 @@ public class ProfileModule extends AbstractModule {
     protected void configure() {
         bind(UserProfileDao.class).to(UserProfileDaoInMemory.class).in(Singleton.class);
         bind(UserProfileService.class).in(Singleton.class);
-        bind(CommandHandlerFactory.class).in(Singleton.class);
         bind(ProfileCommandProcessor.class).in(Singleton.class);
     }
 }

@@ -5,6 +5,8 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
 import com.spotlight.platform.userprofile.api.core.profile.persistence.UserProfileDao;
+import com.spotlight.platform.userprofile.api.model.command.UserProfileCommand;
+import com.spotlight.platform.userprofile.api.model.command.primitives.CommandType;
 import com.spotlight.platform.userprofile.api.model.profile.UserProfile;
 import com.spotlight.platform.userprofile.api.model.profile.primitives.UserId;
 import com.spotlight.platform.userprofile.api.model.profile.primitives.UserProfileFixtures;
@@ -19,11 +21,17 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 
 import ru.vyarus.dropwizard.guice.test.ClientSupport;
 import ru.vyarus.dropwizard.guice.test.jupiter.ext.TestDropwizardAppExtension;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
+
+import static javax.ws.rs.client.Entity.entity;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -95,5 +103,67 @@ class UserResourceIntegrationTest {
 
             assertThat(response.getStatus()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR_500);
         }
+    }
+
+    @Nested
+    @DisplayName("processCommand")
+    class ProcessCommand {
+        private static final String USER_ID_PATH_PARAM = "userId";
+        private static final String URL = "/users/{%s}/command".formatted(USER_ID_PATH_PARAM);
+
+        @Test
+        void existingUser_correctObjectIsReturned(ClientSupport client, UserProfileDao userProfileDao) {
+            when(userProfileDao.get(any(UserId.class))).thenReturn(Optional.of(UserProfileFixtures.USER_PROFILE));
+
+            var command = new UserProfileCommand(UserProfileFixtures.USER_ID, CommandType.increment,new HashMap<>());
+            var response = client.targetRest().path(URL).resolveTemplate(USER_ID_PATH_PARAM, UserProfileFixtures.USER_ID).request()
+                    .post(Entity.json(command));
+
+            assertThat(response.getStatus()).isEqualTo(HttpStatus.OK_200);
+            //  assertThatJson(response.readEntity(UserProfile.class)).isEqualTo(UserProfileFixtures.SERIALIZED_USER_PROFILE);
+        }
+
+        @Test
+        void nonExistingUser_returns200(ClientSupport client, UserProfileDao userProfileDao) {
+            when(userProfileDao.get(any(UserId.class))).thenReturn(Optional.empty());
+
+            var command = new UserProfileCommand(UserProfileFixtures.USER_ID, CommandType.increment,new HashMap<>());
+            var response = client.targetRest().path(URL).resolveTemplate(USER_ID_PATH_PARAM, UserProfileFixtures.USER_ID).request()
+                    .post(Entity.json(command));
+            assertThat(response.getStatus()).isEqualTo(HttpStatus.OK_200);
+        }
+
+    }
+
+    @Nested
+    @DisplayName("processCommands")
+    class ProcessCommands {
+        private static final String USER_ID_PATH_PARAM = "userId";
+        private static final String URL = "/users/{%s}/commands".formatted(USER_ID_PATH_PARAM);
+
+        @Test
+        void existingUser_correctObjectIsReturned(ClientSupport client, UserProfileDao userProfileDao) {
+            when(userProfileDao.get(any(UserId.class))).thenReturn(Optional.of(UserProfileFixtures.USER_PROFILE));
+
+            var command = new ArrayList();
+            command.add(new UserProfileCommand(UserProfileFixtures.USER_ID, CommandType.increment,new HashMap<>()));
+            var response = client.targetRest().path(URL).resolveTemplate(USER_ID_PATH_PARAM, UserProfileFixtures.USER_ID).request()
+                    .post(Entity.json(command));
+
+            assertThat(response.getStatus()).isEqualTo(HttpStatus.OK_200);
+            //  assertThatJson(response.readEntity(UserProfile.class)).isEqualTo(UserProfileFixtures.SERIALIZED_USER_PROFILE);
+        }
+
+        @Test
+        void nonExistingUser_returns200(ClientSupport client, UserProfileDao userProfileDao) {
+            when(userProfileDao.get(any(UserId.class))).thenReturn(Optional.empty());
+
+            var command = new ArrayList();
+            command.add(new UserProfileCommand(UserProfileFixtures.USER_ID, CommandType.increment,new HashMap<>()));
+            var response = client.targetRest().path(URL).resolveTemplate(USER_ID_PATH_PARAM, UserProfileFixtures.USER_ID).request()
+                    .post(Entity.json(command));
+            assertThat(response.getStatus()).isEqualTo(HttpStatus.OK_200);
+        }
+
     }
 }

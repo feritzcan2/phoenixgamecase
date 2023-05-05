@@ -11,16 +11,14 @@ import java.util.List;
 
 public class CollectCommandHandler implements ICommandHandler {
     @Override
+    @SuppressWarnings("unchecked")
     public boolean handle(UserProfile profile, UserProfileCommand command) {
        for(var profilePropertyEntry  : command.properties().entrySet()){
-           try{
-               var oldPropertyValue =  (List<String>) (profile.userProfileProperties().getOrDefault(profilePropertyEntry.getKey(), UserProfilePropertyValue.valueOf(new ArrayList<String>())).getValue());
+               var key = profilePropertyEntry.getKey();
+               var oldPropertyValue =  (List<String>) (profile.userProfileProperties().getOrDefault(key, UserProfilePropertyValue.valueOf(new ArrayList<String>())).getValue());
                var increment = (List<String>) command.properties().get(profilePropertyEntry.getKey()).getValue();
-
                oldPropertyValue.addAll(increment);
-           }catch (Exception e){
-               System.out.println("a");
-           }
+               profile.userProfileProperties().put(key,UserProfilePropertyValue.valueOf(oldPropertyValue));
        }
        return true;
     }

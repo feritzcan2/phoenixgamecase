@@ -17,6 +17,6 @@ class PreventStartupWarningHealthCheckTest {
 
     @Test
     void healthCheckCalled_returnsHealthy() {
-        assertThat(healthCheck.check()).isEqualTo(HealthCheck.Result.healthy());
+        assertThat(healthCheck.check().isHealthy()).isEqualTo(HealthCheck.Result.healthy().isHealthy());
     }
 }

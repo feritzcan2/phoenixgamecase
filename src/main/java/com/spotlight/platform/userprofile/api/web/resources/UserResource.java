@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("/users/{userId}")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -32,6 +33,12 @@ public class UserResource {
     @POST
     public UserProfile processCommand(@Valid UserProfileCommand command) {
         return userProfileService.processCommand(command);
+    }
+
+    @Path("commands")
+    @POST
+    public UserProfile processCommands(@Valid List<UserProfileCommand> commands) {
+        return userProfileService.processCommands(commands);
     }
 }
 

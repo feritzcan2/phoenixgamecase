@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CommandHandlerFactory {
-    @Inject private  IncrementCommandHandler incrementCommandHandler;
-    @Inject private ReplaceCommandHandler replaceCommandHandler;
-    @Inject private  CollectCommandHandler collectCommandHandler;
+     private  IncrementCommandHandler incrementCommandHandler;
+     private ReplaceCommandHandler replaceCommandHandler;
+    private  CollectCommandHandler collectCommandHandler;
 
     private Map<CommandType, ICommandHandler> commandStrategies;
 
