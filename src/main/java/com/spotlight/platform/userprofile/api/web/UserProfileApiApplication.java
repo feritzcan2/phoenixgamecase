@@ -39,7 +39,7 @@ public class UserProfileApiApplication extends Application<UserProfileApiConfigu
     }
 
     public static void main(String[] args) throws Exception {
-        new UserProfileApiApplication().run("server");
+        new UserProfileApiApplication().run(args);
     }
 
     private void registerHealthChecks(Environment environment) {
