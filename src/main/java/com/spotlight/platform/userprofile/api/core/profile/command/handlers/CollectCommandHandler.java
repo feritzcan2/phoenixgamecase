@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CollectCommandHandler implements ICommandHandler {
+public class CollectCommandHandler implements  ICommandHandler{
+
     @Override
     @SuppressWarnings("unchecked")
     public boolean handle(UserProfile profile, UserProfileCommand command) {

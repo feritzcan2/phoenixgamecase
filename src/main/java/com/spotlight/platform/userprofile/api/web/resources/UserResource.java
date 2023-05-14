@@ -7,6 +7,7 @@ import com.spotlight.platform.userprofile.api.model.profile.primitives.UserId;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -31,14 +32,14 @@ public class UserResource {
 
     @Path("command")
     @POST
-    public UserProfile processCommand(@Valid UserProfileCommand command) {
-        return userProfileService.processCommand(command);
+    public UserProfile processCommand(@Valid @PathParam("userId") UserId userId ,@Valid UserProfileCommand command) {
+        return userProfileService.processCommand(userId,command);
     }
 
     @Path("commands")
     @POST
-    public UserProfile processCommands(@Valid List<UserProfileCommand> commands) {
-        return userProfileService.processCommands(commands);
+    public UserProfile processCommands(@Valid @PathParam("userId") UserId userId ,@NotNull  @Valid List<UserProfileCommand> commands) {
+        return userProfileService.processCommands(userId,commands);
     }
 }
 

@@ -3,7 +3,7 @@
   "latestUpdateTime": "2021-06-01T09:16:36.123Z",
   "userProfileProperties": {
     "property1": "propertyReplacedValue",
-    "property3": 0,
-    "property4": []
+    "property3": 5,
+    "property4": ["Test"]
   }
 }

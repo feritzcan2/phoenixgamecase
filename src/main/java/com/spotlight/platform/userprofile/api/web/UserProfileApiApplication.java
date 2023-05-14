@@ -1,7 +1,9 @@
 package com.spotlight.platform.userprofile.api.web;
 
+import com.spotlight.platform.userprofile.api.core.exceptions.CommandPropertyValueCastingException;
 import com.spotlight.platform.userprofile.api.core.json.JsonMapper;
 import com.spotlight.platform.userprofile.api.model.configuration.UserProfileApiConfiguration;
+import com.spotlight.platform.userprofile.api.web.exceptionmappers.CommandPropertyCastingExceptionMapper;
 import com.spotlight.platform.userprofile.api.web.exceptionmappers.EntityNotFoundExceptionMapper;
 import com.spotlight.platform.userprofile.api.web.healthchecks.PreventStartupWarningHealthCheck;
 import com.spotlight.platform.userprofile.api.web.modules.UserProfileApiModule;
@@ -39,7 +41,7 @@ public class UserProfileApiApplication extends Application<UserProfileApiConfigu
     }
 
     public static void main(String[] args) throws Exception {
-        new UserProfileApiApplication().run(args);
+        new UserProfileApiApplication().run("server");
     }
 
     private void registerHealthChecks(Environment environment) {
@@ -48,6 +50,7 @@ public class UserProfileApiApplication extends Application<UserProfileApiConfigu
 
     private void registerExceptionMappers(Environment environment) {
         environment.jersey().register(getInstance(EntityNotFoundExceptionMapper.class));
+        environment.jersey().register(getInstance(CommandPropertyCastingExceptionMapper.class));
     }
 
     private <T> T getInstance(Class<T> clazz) {

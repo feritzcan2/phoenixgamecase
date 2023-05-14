@@ -10,6 +10,7 @@ import com.spotlight.platform.userprofile.api.core.profile.command.handlers.Incr
 import com.spotlight.platform.userprofile.api.core.profile.command.handlers.ReplaceCommandHandler;
 import com.spotlight.platform.userprofile.api.core.profile.persistence.UserProfileDao;
 import com.spotlight.platform.userprofile.api.core.profile.persistence.UserProfileDaoInMemory;
+import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.Replace;
 
 import javax.inject.Singleton;
 
@@ -19,5 +20,10 @@ public class ProfileModule extends AbstractModule {
         bind(UserProfileDao.class).to(UserProfileDaoInMemory.class).in(Singleton.class);
         bind(UserProfileService.class).in(Singleton.class);
         bind(ProfileCommandProcessor.class).in(Singleton.class);
+        bind(CommandHandlerFactory.class).in(Singleton.class);
+        bind(IncrementCommandHandler.class).in(Singleton.class);
+        bind(ReplaceCommandHandler.class).in(Singleton.class);
+        bind(CollectCommandHandler.class).in(Singleton.class);
+
     }
 }

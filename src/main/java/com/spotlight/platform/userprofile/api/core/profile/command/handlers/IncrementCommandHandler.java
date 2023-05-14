@@ -4,7 +4,7 @@ import com.spotlight.platform.userprofile.api.model.command.UserProfileCommand;
 import com.spotlight.platform.userprofile.api.model.profile.UserProfile;
 import com.spotlight.platform.userprofile.api.model.profile.primitives.UserProfilePropertyValue;
 
-public class IncrementCommandHandler implements ICommandHandler {
+public class IncrementCommandHandler implements  ICommandHandler  {
     @Override
     public boolean handle(UserProfile profile, UserProfileCommand command) {
        for(var profilePropertyEntry  : command.properties().entrySet()){
